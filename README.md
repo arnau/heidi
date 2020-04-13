@@ -9,4 +9,4 @@ the NHS.
 Licensed under MIT (See [LICENSE](./LICENSE)).
 
 
-nhs_number: https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp
+[nhs_number]: https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp
