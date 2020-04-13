@@ -102,35 +102,24 @@ impl Number {
 
 impl fmt::Display for Number {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(formatter, "{}", &self.digits[0])?;
+        write!(formatter, "{}", &self.digits[1])?;
+        write!(formatter, "{}", &self.digits[2])?;
         if formatter.alternate() {
-            write!(formatter, "{}", &self.digits[0])?;
-            write!(formatter, "{}", &self.digits[1])?;
-            write!(formatter, "{}", &self.digits[2])?;
             write!(formatter, " ")?;
-            write!(formatter, "{}", &self.digits[3])?;
-            write!(formatter, "{}", &self.digits[4])?;
-            write!(formatter, "{}", &self.digits[5])?;
-            write!(formatter, " ")?;
-            write!(formatter, "{}", &self.digits[6])?;
-            write!(formatter, "{}", &self.digits[7])?;
-            write!(formatter, "{}", &self.digits[8])?;
-            write!(formatter, "{}", &self.checkdigit)?;
-
-            Ok(())
-        } else {
-            write!(formatter, "{}", &self.digits[0])?;
-            write!(formatter, "{}", &self.digits[1])?;
-            write!(formatter, "{}", &self.digits[2])?;
-            write!(formatter, "{}", &self.digits[3])?;
-            write!(formatter, "{}", &self.digits[4])?;
-            write!(formatter, "{}", &self.digits[5])?;
-            write!(formatter, "{}", &self.digits[6])?;
-            write!(formatter, "{}", &self.digits[7])?;
-            write!(formatter, "{}", &self.digits[8])?;
-            write!(formatter, "{}", &self.checkdigit)?;
-
-            Ok(())
         }
+        write!(formatter, "{}", &self.digits[3])?;
+        write!(formatter, "{}", &self.digits[4])?;
+        write!(formatter, "{}", &self.digits[5])?;
+        if formatter.alternate() {
+            write!(formatter, " ")?;
+        }
+        write!(formatter, "{}", &self.digits[6])?;
+        write!(formatter, "{}", &self.digits[7])?;
+        write!(formatter, "{}", &self.digits[8])?;
+        write!(formatter, "{}", &self.checkdigit)?;
+
+        Ok(())
     }
 }
 
