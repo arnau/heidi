@@ -5,6 +5,9 @@ version = "0.1.0"
 authors = ["Arnau Siches <asiches@gmail.com>"]
 edition = "2018"
 license = "MIT"
+homepage = "https://github.com/arnau/heidi"
+repository = "https://github.com/arnau/heidi.git"
+readme = "README.md"
 
 
 [dependencies]
