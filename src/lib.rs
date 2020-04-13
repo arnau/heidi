@@ -4,13 +4,17 @@
 // This file may not be copied, modified, or distributed except
 // according to those terms.
 
-//! `nhs_number` implements the NSH number validation “Modulus 11”.
-//! See: <https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp>
+//! `nhs_number` implements the NSH number validation “Modulus 11”.  See:
+//! <https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp>
 //!
 //! Example numbers were generated with <http://danielbayley.uk/nhs-number/>
+//!
+//! The NHS Number is a unique number allocated to every patient registered with
+//! the NHS in England, Wales and the Isle of Man.
 
 use std::convert::TryFrom;
 use std::error::Error;
+use std::fmt;
 use std::str::FromStr;
 
 /// A digit can be from 0 to 9.
@@ -88,6 +92,40 @@ impl Number {
 
     pub fn digits(&self) -> &[Digit; 9] {
         &self.digits
+    }
+}
+
+impl fmt::Display for Number {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        if formatter.alternate() {
+            write!(formatter, "{}", &self.digits[0])?;
+            write!(formatter, "{}", &self.digits[1])?;
+            write!(formatter, "{}", &self.digits[2])?;
+            write!(formatter, " ")?;
+            write!(formatter, "{}", &self.digits[3])?;
+            write!(formatter, "{}", &self.digits[4])?;
+            write!(formatter, "{}", &self.digits[5])?;
+            write!(formatter, " ")?;
+            write!(formatter, "{}", &self.digits[6])?;
+            write!(formatter, "{}", &self.digits[7])?;
+            write!(formatter, "{}", &self.digits[8])?;
+            write!(formatter, "{}", &self.checkdigit)?;
+
+            Ok(())
+        } else {
+            write!(formatter, "{}", &self.digits[0])?;
+            write!(formatter, "{}", &self.digits[1])?;
+            write!(formatter, "{}", &self.digits[2])?;
+            write!(formatter, "{}", &self.digits[3])?;
+            write!(formatter, "{}", &self.digits[4])?;
+            write!(formatter, "{}", &self.digits[5])?;
+            write!(formatter, "{}", &self.digits[6])?;
+            write!(formatter, "{}", &self.digits[7])?;
+            write!(formatter, "{}", &self.digits[8])?;
+            write!(formatter, "{}", &self.checkdigit)?;
+
+            Ok(())
+        }
     }
 }
 
@@ -174,9 +212,18 @@ impl FromStr for Number {
     /// Fails with [ValidationError] when the check digit cannot be verified.
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut digits: [Digit; 10] = [0; 10];
-        let vec: Vec<Digit> = s.chars().map(|d| d.to_digit(10).unwrap() as u16).collect();
+        let vec: Vec<Digit> = s
+            .chars()
+            .filter_map(|d| {
+                if d.is_whitespace() {
+                    None
+                } else {
+                    Some(d.to_digit(10).unwrap() as u16)
+                }
+            })
+            .collect();
 
-        if s.len() != 10 {
+        if vec.len() != 10 {
             return Err(ValidationError::new("Numbers must be of 10 digits."));
         }
 
@@ -187,13 +234,13 @@ impl FromStr for Number {
 }
 
 fn check_digit(digits: &[u16; 9]) -> Result<Digit, ValidationError> {
-    let mut res = 0;
+    let weighted_sum = digits
+        .iter()
+        .enumerate()
+        .fold(0, |sum, (idx, digit)| sum + (digit * (10 - (idx as u16))));
+    let chi = 11 - (weighted_sum % 11);
 
-    for (idx, digit) in digits.iter().enumerate() {
-        res += (10 - (idx as u16)) * digit;
-    }
-
-    match 11 - (res % 11) {
+    match chi {
         11 => Ok(0),
         d if d >= 10 => {
             return Err(ValidationError::new(
@@ -250,5 +297,37 @@ mod tests {
     #[test]
     fn valid_number_from_slice10() {
         assert!(Number::try_from(&[8, 9, 3, 1, 7, 7, 4, 5, 8, 3]).is_ok());
+    }
+
+    #[test]
+    fn valid_formatted_string() -> Result<(), ValidationError> {
+        let f = Number::from_str("893 177 4583")?;
+        let u = Number::from_str("8931774583")?;
+
+        assert_eq!(f.checkdigit(), u.checkdigit());
+        assert_eq!(f.digits(), u.digits());
+
+        Ok(())
+    }
+
+    #[test]
+    fn display_compact() -> Result<(), ValidationError> {
+        let n = "893 177 4583";
+        let number = Number::from_str(n)?;
+        let expected = "8931774583";
+
+        assert_eq!(format!("{}", number), expected.to_string());
+
+        Ok(())
+    }
+
+    #[test]
+    fn display_alternate() -> Result<(), ValidationError> {
+        let n = String::from("893 177 4583");
+        let number = Number::from_str(&n)?;
+
+        assert_eq!(format!("{:#}", number), n);
+
+        Ok(())
     }
 }
