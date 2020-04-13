@@ -4,6 +4,7 @@ description = "A library to work with NHS numbers"
 version = "0.1.0"
 authors = ["Arnau Siches <asiches@gmail.com>"]
 edition = "2018"
+license = "MIT"
 
 
 [dependencies]
