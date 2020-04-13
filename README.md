@@ -1,9 +1,12 @@
-# NHS number
+# Heidi
 
-`nhs_number` implements the NSH number validation “Modulus 11”.
-See: https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp
+`heidi` is a Rust library to work with [NSH numbers][nhs_number] as defined by
+the NHS.
 
 
 ## Licence
 
 Licensed under MIT (See [LICENSE](./LICENSE)).
+
+
+nhs_number: https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp

@@ -4,7 +4,7 @@
 // This file may not be copied, modified, or distributed except
 // according to those terms.
 
-//! `nhs_number` implements the NSH number validation “Modulus 11”.  See:
+//! `heidi` implements the NSH number validation “Modulus 11”.  See:
 //! <https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp>
 //!
 //! Example numbers were generated with <http://danielbayley.uk/nhs-number/>
@@ -26,7 +26,7 @@ pub type Digit = u16;
 /// # Examples
 ///
 /// ```
-/// use nhs_number::Number;
+/// use heidi::Number;
 /// use std::str::FromStr;
 ///
 /// let n = "6541003238";
@@ -39,7 +39,7 @@ pub type Digit = u16;
 ///
 /// ```
 /// use std::convert::TryFrom;
-/// use nhs_number::Number;
+/// use heidi::Number;
 ///
 /// let n = String::from("6541003238");
 /// let number = Number::try_from(n);
@@ -51,7 +51,7 @@ pub type Digit = u16;
 ///
 /// ```
 /// use std::convert::TryFrom;
-/// use nhs_number::Number;
+/// use heidi::Number;
 ///
 /// let n: [u16; 10] = [6, 5, 4, 1, 0, 0, 3, 2, 3, 8];
 /// let number = Number::try_from(&n);
@@ -72,7 +72,7 @@ impl Number {
     /// # Examples
     ///
     /// ```
-    /// use nhs_number::Number;
+    /// use heidi::Number;
     ///
     /// let n: [u16; 9] = [3, 7, 8, 3, 9, 5, 5, 6, 0];
     /// let number = Number::new(n);
@@ -137,7 +137,7 @@ impl TryFrom<&[Digit; 10]> for Number {
     /// # Examples
     ///
     /// ```
-    /// use nhs_number::Number;
+    /// use heidi::Number;
     /// use std::convert::TryFrom;
     ///
     /// let n: [u16; 10] = [6, 5, 4, 1, 0, 0, 3, 2, 3, 8];
@@ -175,7 +175,7 @@ impl TryFrom<String> for Number {
     /// Converts a string of 10 digits into a [`Number`].
     ///
     /// ```
-    /// use nhs_number::Number;
+    /// use heidi::Number;
     /// use std::convert::TryFrom;
     ///
     /// let n = String::from("6541003238");
@@ -198,7 +198,7 @@ impl FromStr for Number {
     /// Converts a string slice of 10 digits into a [`Number`].
     ///
     /// ```
-    /// use nhs_number::Number;
+    /// use heidi::Number;
     /// use std::str::FromStr;
     ///
     /// let n = "6541003238";
@@ -285,14 +285,6 @@ mod tests {
     fn valid_number() {
         assert!(Number::new([8, 9, 3, 1, 7, 7, 4, 5, 8]).is_ok());
     }
-
-    // #[test]
-    // fn invalid_number() -> Result<(), ValidationError> {
-    //     // assert_eq!(Number::try_from(&[8, 9, 3, 1, 7, 7, 4, 5, 8])?);
-    //     assert_eq!(3, check_digit(&[9, 9, 9, 9, 9, 9, 9, 9, 9])?);
-
-    //     Ok(())
-    // }
 
     #[test]
     fn valid_number_from_slice10() {
