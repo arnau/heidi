@@ -4,7 +4,7 @@
 // This file may not be copied, modified, or distributed except
 // according to those terms.
 
-//! `heidi` implements the NSH number validation “Modulus 11”. See:
+//! `heidi` implements the NHS number validation “Modulus 11”. See:
 //! <https://www.datadictionary.nhs.uk/data_dictionary/attributes/n/nhs/nhs_number_de.asp>
 //!
 //! Example numbers were generated with <http://danielbayley.uk/nhs-number/>
