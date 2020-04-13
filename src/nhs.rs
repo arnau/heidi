@@ -186,6 +186,49 @@ impl TryFrom<String> for Number {
     }
 }
 
+impl TryFrom<usize> for Number {
+    type Error = ValidationError;
+
+    /// Converts an unsigned integer into a [`Number`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use heidi::nhs::Number;
+    /// use std::convert::TryFrom;
+    ///
+    /// let n: usize = 6541003238;
+    /// let number = Number::try_from(n);
+    ///
+    /// assert_eq!(*number.unwrap().checkdigit(), 8);
+    /// ```
+    ///
+    /// # Errors
+    ///
+    /// Fails with [ValidationError] when the check digit cannot be verified.
+    fn try_from(value: usize) -> Result<Self, Self::Error> {
+        let mut digits: [Digit; 10] = [0; 10];
+        let mut idx: usize = 0;
+        let mut div = 1_000_000_000;
+
+        if (value / div * 10) % 10 != 0 {
+            return Err(ValidationError(format!(
+                "The given number {} has more than 10 digits.",
+                &value
+            )));
+        }
+
+        while idx <= 9 {
+            digits[idx] = ((value / div) % 10) as u16;
+
+            div = div / 10;
+            idx = idx + 1;
+        }
+
+        Number::try_from(&digits)
+    }
+}
+
 impl FromStr for Number {
     type Err = ValidationError;
 
@@ -313,6 +356,16 @@ mod tests {
         let number = Number::from_str(&n)?;
 
         assert_eq!(format!("{:#}", number), n);
+
+        Ok(())
+    }
+
+    #[test]
+    fn valid_usize() -> Result<(), ValidationError> {
+        let n = 893_177_4583;
+        let number = Number::try_from(n)?;
+
+        assert_eq!(*number.checkdigit(), 3);
 
         Ok(())
     }
