@@ -1,6 +1,6 @@
 // Copyright 2020 Arnau Siches
 
-// Licensed under the MIT license <LICENSE or http://opensource.org/licenses/MIT>.
+// Licensed under the MIT license <LICENCE or http://opensource.org/licenses/MIT>.
 // This file may not be copied, modified, or distributed except
 // according to those terms.
 
@@ -303,6 +303,35 @@ impl Error for ValidationError {}
 impl std::fmt::Display for ValidationError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+/// Returns a random NHS Number.
+///
+/// If the result is not valid (e.g. the modulus 11 is 10) it will generate a new one.
+///
+/// # Examples
+///
+/// ```
+/// use heidi::nhs::lottery;
+///
+/// let number = lottery();
+/// assert!(number.is_ok());
+/// ```
+pub fn lottery() -> Result<Number, ValidationError> {
+    use rand::prelude::*;
+
+    let mut rng = rand::thread_rng();
+    let mut digits = [0u16; 9];
+    let distr = rand::distributions::Uniform::new_inclusive(0, 9);
+
+    for x in &mut digits {
+        *x = rng.sample(distr);
+    }
+
+    match Number::new(digits) {
+        Err(_) => lottery(),
+        number => number,
     }
 }
 
