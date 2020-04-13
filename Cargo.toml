@@ -11,4 +11,4 @@ readme = "README.md"
 
 
 [dependencies]
-rand = "*"
+rand = "0.7"
