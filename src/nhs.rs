@@ -261,7 +261,9 @@ impl FromStr for Number {
             .collect();
 
         if vec.len() != 10 {
-            return Err(ValidationError::new("Numbers must be of 10 digits."));
+            return Err(ValidationError::new(
+                "NHS Numbers must be of ten-digit long",
+            ));
         }
 
         digits.copy_from_slice(&vec);
@@ -281,7 +283,7 @@ fn check_digit(digits: &[u16; 9]) -> Result<Digit, ValidationError> {
         11 => Ok(0),
         d if d >= 10 => {
             return Err(ValidationError::new(
-                "This number is invalid. NHS numbers don't have a check digit of 10.",
+                "NHS numbers don't have a check digit of 10",
             ));
         }
         d => Ok(d),

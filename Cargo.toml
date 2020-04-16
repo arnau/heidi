@@ -9,6 +9,11 @@ homepage = "https://github.com/arnau/heidi"
 repository = "https://github.com/arnau/heidi.git"
 readme = "README.md"
 
+[[bin]]
+name = "heidi"
+path = "src/cli/main.rs"
 
 [dependencies]
 rand = "0.7"
+structopt = "0.3"
+clap = "2"
