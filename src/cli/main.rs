@@ -5,7 +5,7 @@
 // according to those terms.
 
 use clap::arg_enum;
-use heidi::nhs;
+use heidi::{chi, nhs};
 use std::process;
 use std::str::FromStr;
 use structopt::StructOpt;
@@ -85,20 +85,40 @@ fn main() {
                 };
             }
             Typeid::Chi => {
-                println!("not yet implemented");
+                match chi::Number::from_str(&number) {
+                    Ok(n) => {
+                        println!("Chi Number '{:#}' is valid.", &n);
+                    }
+                    Err(e) => {
+                        eprintln!("Chi Number '{}' is invalid.", &number);
+                        eprintln!("Error: {}.", &e);
+                        process::exit(1);
+                    }
+                };
             }
         },
-        Opt::Generate { _type, format } => {
-            match nhs::lottery() {
-                Ok(n) => match format {
-                    Format::Official => println!("{:#}", &n),
-                    _ => println!("{}", &n),
-                },
-                Err(e) => {
-                    eprintln!("{}", &e);
-                    process::exit(1);
-                }
-            };
-        }
+        Opt::Generate { _type, format } => match _type {
+            Typeid::Nhs => {
+                match nhs::lottery() {
+                    Ok(n) => match format {
+                        Format::Official => println!("{:#}", &n),
+                        _ => println!("{}", &n),
+                    },
+                    Err(e) => {
+                        eprintln!("{}", &e);
+                        process::exit(1);
+                    }
+                };
+            }
+            Typeid::Chi => {
+                match chi::lottery() {
+                    Ok(n) => println!("{}", &n),
+                    Err(e) => {
+                        eprintln!("{}", &e);
+                        process::exit(1);
+                    }
+                };
+            }
+        },
     };
 }
