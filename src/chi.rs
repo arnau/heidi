@@ -136,3 +136,32 @@ fn validate(digits: &[u16; 9]) -> Result<(), ValidationError> {
 
     Ok(())
 }
+
+/// Returns a random Chi Number.
+///
+/// If the result is not valid (e.g. the modulus 11 is 10) it will generate a new one.
+///
+/// # Examples
+///
+/// ```
+/// use heidi::chi::lottery;
+///
+/// let number = lottery();
+/// assert!(number.is_ok());
+/// ```
+pub fn lottery() -> Result<Number, ValidationError> {
+    use rand::prelude::*;
+
+    let mut rng = rand::thread_rng();
+    let mut digits = [0u16; 9];
+    let distr = rand::distributions::Uniform::new_inclusive(0, 9);
+
+    for x in &mut digits {
+        *x = rng.sample(distr);
+    }
+
+    match Number::new(digits) {
+        Err(_) => lottery(),
+        number => number,
+    }
+}
