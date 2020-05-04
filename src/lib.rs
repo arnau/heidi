@@ -10,3 +10,4 @@
 pub mod chi;
 pub mod error;
 pub mod nhs;
+pub mod number;
