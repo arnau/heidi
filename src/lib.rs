@@ -7,4 +7,6 @@
 //! `heidi` (health identifiers) is a library to work with health identifiers
 //! such as NHS Numbers.
 
+pub mod chi;
+pub mod error;
 pub mod nhs;
